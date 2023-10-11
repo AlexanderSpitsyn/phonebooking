@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url:
+    username: # Use some secret's storage on prod
+    password: # Use some secret's storage on prod
