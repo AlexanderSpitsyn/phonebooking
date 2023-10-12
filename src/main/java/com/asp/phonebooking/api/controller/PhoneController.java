@@ -5,6 +5,7 @@ import com.asp.phonebooking.api.dto.ReadPhoneDTO;
 import com.asp.phonebooking.api.dto.ReadPhoneWithBookingsDTO;
 import com.asp.phonebooking.api.dto.UpdatePhoneDTO;
 import com.asp.phonebooking.api.mapper.PhoneMapper;
+import com.asp.phonebooking.service.PhoneBookingService;
 import com.asp.phonebooking.service.PhoneService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -25,11 +26,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class PhoneController {
 
     private final PhoneService phoneService;
+    private final PhoneBookingService phoneBookingService;
     private final PhoneMapper phoneMapper;
 
     public PhoneController(PhoneService phoneService,
+                           PhoneBookingService phoneBookingService,
                            PhoneMapper phoneMapper) {
         this.phoneService = phoneService;
+        this.phoneBookingService = phoneBookingService;
         this.phoneMapper = phoneMapper;
     }
 
@@ -53,6 +57,14 @@ public class PhoneController {
     @PreAuthorize("hasRole('ADMIN')")
     public void delete(@PathVariable Long id) {
         phoneService.delete(id);
+    }
+
+    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ReadPhoneWithBookingsDTO get(@PathVariable Long id) {
+        var phone = phoneService.get(id);
+        var bookings = phoneBookingService.getAllRelevantByPhoneId(id);
+        return phoneMapper.toReadWithBookingsDto(phone, bookings);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)

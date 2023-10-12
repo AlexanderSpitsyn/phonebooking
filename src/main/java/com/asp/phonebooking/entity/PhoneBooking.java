@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -23,20 +24,61 @@ public class PhoneBooking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * Who booked
+     */
     @NotEmpty
     private String username;
 
+    /**
+     * Which phone is booked
+     */
     @NotNull
     @Column(name = "phone_id")
     private Long phoneId;
 
+    /**
+     * When booked
+     */
+    @NotNull
+    @Column(name = "created_at")
+    private Instant createdAt;
+
+    /**
+     * Booked from date/time
+     */
     @NotNull
     private Instant startpoint;
 
+    /**
+     * Booked to date/time
+     */
     @NotNull
     private Instant endpoint;
 
     private boolean deleted;
+
+    protected PhoneBooking() {
+    }
+
+    public PhoneBooking(Long id,
+                        String username,
+                        Long phoneId,
+                        Instant createdAt,
+                        Instant startpoint,
+                        Instant endpoint) {
+        this.id = id;
+        this.username = username;
+        this.phoneId = phoneId;
+        this.createdAt = createdAt;
+        this.startpoint = startpoint;
+        this.endpoint = endpoint;
+    }
+
+    @PrePersist
+    protected void fillCreatedAt() {
+        this.createdAt = Instant.now();
+    }
 
     public Long getId() {
         return id;
@@ -46,32 +88,20 @@ public class PhoneBooking {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public Long getPhoneId() {
         return phoneId;
     }
 
-    public void setPhoneId(Long phoneId) {
-        this.phoneId = phoneId;
+    public Instant getCreatedAt() {
+        return createdAt;
     }
 
     public Instant getStartpoint() {
         return startpoint;
     }
 
-    public void setStartpoint(Instant startpoint) {
-        this.startpoint = startpoint;
-    }
-
     public Instant getEndpoint() {
         return endpoint;
-    }
-
-    public void setEndpoint(Instant endpoint) {
-        this.endpoint = endpoint;
     }
 
     @Override

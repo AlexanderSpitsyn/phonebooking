@@ -46,6 +46,11 @@ public class PhoneService {
         return phoneRepository.save(phone);
     }
 
+    public Phone get(Long id) {
+        return phoneRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Phone doesn't exist"));
+    }
+
     public Iterable<Phone> findAll() {
         return phoneRepository.findAll();
     }
