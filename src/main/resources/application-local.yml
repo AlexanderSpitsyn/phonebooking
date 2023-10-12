@@ -3,3 +3,12 @@ spring:
     url: jdbc:postgresql://localhost:5432/phone_booking
     username: myuser
     password: secret
+  jpa:
+    properties:
+      hibernate.show_sql: true
+      hibernate.format_sql: true
+      hibernate.type: trace
+
+server:
+  error:
+    include-message: always
