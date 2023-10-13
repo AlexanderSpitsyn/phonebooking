@@ -8,7 +8,10 @@ spring:
       hibernate.show_sql: true
       hibernate.format_sql: true
       hibernate.type: trace
-
+  flyway:
+    url: ${spring.datasource.url}
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
 server:
   error:
     include-message: always

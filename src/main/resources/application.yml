@@ -3,3 +3,9 @@ spring:
     url:
     username: # Use some secret's storage on prod
     password: # Use some secret's storage on prod
+  flyway:
+    url:
+    user: # Use some secret's storage on prod
+    password: # Use some secret's storage on prod
+  jpa:
+    open-in-view: false
