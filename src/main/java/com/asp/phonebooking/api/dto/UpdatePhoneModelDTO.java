@@ -2,38 +2,40 @@ package com.asp.phonebooking.api.dto;
 
 import static java.util.Objects.requireNonNull;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
-public class UpdatePhoneModelDTO {
+public class UpdatePhoneModelDTO extends CreatePhoneModelDTO {
 
     @Schema(hidden = true)
     private Long id;
 
-    @NotNull
-    @Size(min = 3, max = 300)
-    private final String name;
-
-    @JsonCreator
-    public UpdatePhoneModelDTO(String name) {
-        this.name = name;
+    public UpdatePhoneModelDTO(String brand,
+                               String device,
+                               String technology,
+                               String bands2g,
+                               String bands3g,
+                               String bands4g,
+                               Boolean updateWithExternal) {
+        super(brand, device, technology, bands2g, bands3g, bands4g, updateWithExternal);
     }
 
     public UpdatePhoneModelDTO withId(Long id) {
         requireNonNull(id, "id must not be null");
 
-        var dto = new UpdatePhoneModelDTO(name);
+        var dto = new UpdatePhoneModelDTO(
+                getBrand(),
+                getDevice(),
+                getTechnology(),
+                getBands2g(),
+                getBands3g(),
+                getBands4g(),
+                getUpdateWithExternal()
+        );
         dto.id = id;
         return dto;
     }
 
     public Long getId() {
         return id;
-    }
-
-    public String getName() {
-        return name;
     }
 }

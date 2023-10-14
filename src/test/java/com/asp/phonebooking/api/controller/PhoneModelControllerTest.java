@@ -48,22 +48,30 @@ class PhoneModelControllerTest {
             var argument = invocation.getArgument(0, PhoneModel.class);
             var phoneModel = mock(PhoneModel.class);
             when(phoneModel.getId()).thenReturn(1L);
-            when(phoneModel.getName()).thenReturn(argument.getName());
+            when(phoneModel.getBrand()).thenReturn(argument.getBrand());
+            when(phoneModel.getDevice()).thenReturn(argument.getDevice());
             return phoneModel;
         });
 
-        var createPhoneModelDTO = new CreatePhoneModelDTO("testPhoneModel");
+        var createPhoneModelDTO = new CreatePhoneModelDTO(
+                "testPhoneBrand",
+                "testPhoneDevice",
+                null, null, null, null,
+                true
+        );
 
         mockMvc.perform(post("/phone_model")
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createPhoneModelDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.name").value(createPhoneModelDTO.getName()));
+                .andExpect(jsonPath("$.brand").value(createPhoneModelDTO.getBrand()))
+                .andExpect(jsonPath("$.device").value(createPhoneModelDTO.getDevice()));
 
         verify(phoneModelService).create(argThat(argument ->
                 argument.getId() == null
-                        && argument.getName().equals(createPhoneModelDTO.getName())
+                        && argument.getBrand().equals(createPhoneModelDTO.getBrand())
+                        && argument.getDevice().equals(createPhoneModelDTO.getDevice())
         ));
     }
 
@@ -76,22 +84,30 @@ class PhoneModelControllerTest {
             var argument = invocation.getArgument(0, PhoneModel.class);
             var phoneModel = mock(PhoneModel.class);
             when(phoneModel.getId()).thenReturn(phoneModelId);
-            when(phoneModel.getName()).thenReturn(argument.getName());
+            when(phoneModel.getBrand()).thenReturn(argument.getBrand());
+            when(phoneModel.getDevice()).thenReturn(argument.getDevice());
             return phoneModel;
         });
 
-        var updatePhoneModelDTO = new UpdatePhoneModelDTO("testPhoneModel");
+        var updatePhoneModelDTO = new UpdatePhoneModelDTO(
+                "testPhoneBrand",
+                "testPhoneDevice",
+                null, null, null, null,
+                true
+        );;
 
         mockMvc.perform(put("/phone_model/" + phoneModelId)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updatePhoneModelDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(phoneModelId))
-                .andExpect(jsonPath("$.name").value(updatePhoneModelDTO.getName()));
+                .andExpect(jsonPath("$.brand").value(updatePhoneModelDTO.getBrand()))
+                .andExpect(jsonPath("$.device").value(updatePhoneModelDTO.getDevice()));
 
         verify(phoneModelService).update(argThat(argument ->
                 argument.getId() == phoneModelId
-                        && argument.getName().equals(updatePhoneModelDTO.getName())
+                        && argument.getBrand().equals(updatePhoneModelDTO.getBrand())
+                        && argument.getDevice().equals(updatePhoneModelDTO.getDevice())
         ));
     }
 
@@ -111,14 +127,16 @@ class PhoneModelControllerTest {
         long phoneModelId = 1;
         var phoneModel = mock(PhoneModel.class);
         when(phoneModel.getId()).thenReturn(phoneModelId);
-        when(phoneModel.getName()).thenReturn("phoneModel 1");
+        when(phoneModel.getBrand()).thenReturn("phoneModelBrand");
+        when(phoneModel.getDevice()).thenReturn("phoneModelDevice");
 
         when(phoneModelService.get(phoneModelId)).thenReturn(phoneModel);
 
         mockMvc.perform(get("/phone_model/" + phoneModelId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(phoneModel.getId()))
-                .andExpect(jsonPath("$.name").value(phoneModel.getName()));
+                .andExpect(jsonPath("$.brand").value(phoneModel.getBrand()))
+                .andExpect(jsonPath("$.device").value(phoneModel.getDevice()));
     }
 
     @Test
@@ -126,11 +144,13 @@ class PhoneModelControllerTest {
     void getAll() throws Exception {
         var phoneModel1 = mock(PhoneModel.class);
         when(phoneModel1.getId()).thenReturn(1L);
-        when(phoneModel1.getName()).thenReturn("phoneModel 1");
+        when(phoneModel1.getBrand()).thenReturn("phoneModelBrand 1");
+        when(phoneModel1.getDevice()).thenReturn("phoneModelDevice 1");
 
         var phoneModel2 = mock(PhoneModel.class);
         when(phoneModel2.getId()).thenReturn(2L);
-        when(phoneModel2.getName()).thenReturn("phoneModel 2");
+        when(phoneModel2.getBrand()).thenReturn("phoneModelBrand 2");
+        when(phoneModel2.getDevice()).thenReturn("phoneModelDevice 2");
 
         when(phoneModelService.findAll()).thenReturn(List.of(phoneModel1, phoneModel2));
 
@@ -138,10 +158,12 @@ class PhoneModelControllerTest {
                 .andExpect(status().isOk())
 
                 .andExpect(jsonPath("$.[0].id").value(phoneModel1.getId()))
-                .andExpect(jsonPath("$.[0].name").value(phoneModel1.getName()))
+                .andExpect(jsonPath("$.[0].brand").value(phoneModel1.getBrand()))
+                .andExpect(jsonPath("$.[0].device").value(phoneModel1.getDevice()))
 
                 .andExpect(jsonPath("$.[1].id").value(phoneModel2.getId()))
-                .andExpect(jsonPath("$.[1].name").value(phoneModel2.getName()))
+                .andExpect(jsonPath("$.[1].brand").value(phoneModel2.getBrand()))
+                .andExpect(jsonPath("$.[1].device").value(phoneModel2.getDevice()))
 
                 .andExpect(jsonPath("$.[2]").doesNotExist());
     }

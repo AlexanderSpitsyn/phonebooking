@@ -9,3 +9,7 @@ spring:
     password: # Use some secret's storage on prod
   jpa:
     open-in-view: false
+
+phonebooking:
+  phone-model:
+    update-with-external-run-period-seconds: 3600 # 1 hour
